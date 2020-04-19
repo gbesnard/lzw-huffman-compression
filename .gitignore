@@ -1,7 +1,7 @@
 *.o
 *.swp
 */test/output/*
-!test/output/.gitkeep
+!*/test/output/.gitkeep
 */bin/*
 !*/bin/.gitkeep
 *.bin
