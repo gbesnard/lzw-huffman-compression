@@ -1,0 +1,56 @@
+openvpn(8)                                                       System Manager's Manual                                                       openvpn(8)
+
+NAME
+       openvpn - secure IP tunnel daemon.
+
+SYNOPSIS
+       openvpn [ options ... ]
+
+INTRODUCTION
+       OpenVPN is an open source VPN daemon by James Yonan.  Because OpenVPN tries to be a universal VPN tool offering a great deal of flexibility, there
+       are a lot of options on this manual page.  If you're new to OpenVPN, you might want to skip ahead to the examples section where you will  see  how
+       to construct simple VPNs on the command line without even needing a configuration file.
+
+       Also note that there's more documentation and examples on the OpenVPN web site: http://openvpn.net/
+
+       And  if you would like to see a shorter version of this manual, see the openvpn usage message which can be obtained by running openvpn without any
+       parameters.
+
+DESCRIPTION
+       OpenVPN is a robust and highly flexible VPN daemon.  OpenVPN supports SSL/TLS security, ethernet bridging, TCP or  UDP  tunnel  transport  through
+       proxies  or  NAT, support for dynamic IP addresses and DHCP, scalability to hundreds or thousands of users, and portability to most major OS plat‐
+       forms.
+
+       OpenVPN is tightly bound to the OpenSSL library, and derives much of its crypto capabilities from it.
+
+       OpenVPN supports conventional encryption using a pre-shared secret key (Static Key mode) or public key security  (SSL/TLS  mode)  using  client  &
+       server certificates.  OpenVPN also supports non-encrypted TCP/UDP tunnels.
+
+       OpenVPN is designed to work with the TUN/TAP virtual networking interface that exists on most platforms.
+
+       Overall, OpenVPN aims to offer many of the key features of IPSec but with a relatively lightweight footprint.
+
+OPTIONS
+       OpenVPN  allows  any option to be placed either on the command line or in a configuration file.  Though all command line options are preceded by a
+       double-leading-dash ("--"), this prefix can be removed when an option is placed in a configuration file.
+
+       --help Show options.
+
+       --config file
+              Load additional config options from file where each line corresponds to one command line option, but with the leading '--' removed.
+
+              If --config file is the only option to the openvpn command, the --config can be removed, and the command can be given as openvpn file
+
+              Note that configuration files can be nested to a reasonable depth.
+
+              Double quotation or single quotation characters ("", '') can be used to enclose single parameters containing whitespace,  and  "#"  or  ";"
+              characters in the first column can be used to denote comments.
+
+              Note that OpenVPN 2.0 and higher performs backslash-based shell escaping for characters not in single quotations, so the following mappings
+              should be observed:
+
+                  \\       Maps to a single backslash character (\).
+                  \"       Pass a literal doublequote character ("), don't
+                           interpret it as enclosing a parameter.
+                  \[SPACE] Pass a literal space or tab character, don't
+                           interpret it as a parameter delimiter.
