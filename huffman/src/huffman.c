@@ -230,13 +230,13 @@ void find_mins_trees(int *min1, int *min2, struct node *trees[])
     }
 }
 
-int decompress(char * output_filename) 
+int decompress(char * output_filename, char * compressed_filename) 
 {
 	FILE *fd;
     long fsize;
 
     /* read compressed data */
-    if ((fd = fopen("comp.bin", "rb")) == NULL) {
+    if ((fd = fopen(compressed_filename, "rb")) == NULL) {
         fprintf(stderr, "fopen returned %s\n", strerror(errno));
         exit(0);
     }
@@ -255,11 +255,17 @@ int decompress(char * output_filename)
     int charcounter = 0;
     unsigned char decoded_char[fsize*10]; // TODO: same, use realloc ? can't really know size in advance : no it's not fsize !
     struct node *tmptree = huffmantree;
-    
+
+#ifdef DEBUG
     printf("\n============ READ DATA =============\n\n");
+#endif
+
     for (int i = 0; i < (fsize/4); i++) {
-        
+
+#ifdef DEBUG    
         printf("====================i:%i\tfisze/4:%i\n==============\n", i, fsize/4);
+#endif
+
         if (i+1 == fsize/4) {
             sub_loop_bound = shiftcount-1; /* all bits in last byte might not mean something */
         }
@@ -309,7 +315,7 @@ int decompress(char * output_filename)
 }
 
 
-int compress(char * input_filename) 
+int compress(char * input_filename, char * compressed_filename) 
 {
     srand(time(NULL));
    
@@ -332,18 +338,23 @@ int compress(char * input_filename)
     fclose(fd);
 
     /* count char occurences */
+#ifdef DEBUG
     if (fsize < 20) {
         printf("\n========== CHAR READ ===========\n\n");
     }
+#endif
+
     int to_analyze = fsize;
     
     for(int i = 0; i < to_analyze; i++) {
         occ[buffer[i]]++; 
 
+#ifdef DEBUG
         if (fsize < 20) {
             printf("%c\t%x\t", buffer[i], buffer[i]);
             printf(BYTE_TO_BINARY_PATTERN"\n", BYTE_TO_BINARY(buffer[i]));
         }
+#endif
     }
     
     /* make a small forest of one elem trees */
@@ -354,12 +365,16 @@ int compress(char * input_filename)
     }
     
     /* build Huffman tree */ 
+#ifdef DEBUG
     printf("\n=========== HUFFMAN ============\n\n");
+#endif
+
     int min1, min2;
     int iter = 0;
 
     do {
         iter++;
+#ifdef DEBUG
         if (fsize < 20) {
             printf("ITERATION %i\n\n", iter);
             for (int i = 0; i < 256; i++) {
@@ -368,6 +383,7 @@ int compress(char * input_filename)
                 }
             }
         }
+#endif
 
         int val = 0;
         find_mins_trees(&min1, &min2, trees);
@@ -394,6 +410,7 @@ int compress(char * input_filename)
         
     } while(min1 != -1 && min2 != -1);
 
+#ifdef DEBUG
     if (fsize < 20) {
         /* crash on big trees */
         print_t(huffmantree); 
@@ -401,8 +418,12 @@ int compress(char * input_filename)
     else {
         print_tree(huffmantree);
     }
+#endif
 
+#ifdef DEBUG
     printf("\n=========== CHAR TABLE =============\n\n");
+#endif
+
     int coding[10]; // 10 is the max size for a code, considering all 256 ascii char are present */
     uint32_t bin[409600] = {0}; // TODO : SIZE : alloc by chunk ?
     int bincount = 0;
@@ -414,20 +435,29 @@ int compress(char * input_filename)
             }
 
             if (path_tree(c, huffmantree, coding, 0)) {
+#ifdef DEBUG
                 printf("%c \t", c);
+#endif
                 for (int i = 0; i < 256; i ++) {
                     if (coding[i] == -1) {
                         break;
                     }
 
+#ifdef DEBUG
                     printf("%i", coding[i]);
+#endif
                 }
+#ifdef DEBUG
                 printf("\n");
+#endif
             }
         }
     }
 
+#ifdef DEBUG
     printf("\n============= SEQ GEN ==============\n\n");
+#endif
+
     for (int i = 0; i < fsize; i++) {
         for (int k = 0; k < 256; k++) {
             coding[k] = -1;
@@ -457,15 +487,17 @@ int compress(char * input_filename)
         }
     }
 
+#ifdef DEBUG
     if (fsize < 20) {
         for (int i = 0; i < bincount+1; i++) {
             printf("bin[i] \t%u\t0x%04x\t", bin[i], bin[i]);
             printf(BYTE_TO_BINARY_PATTERN"\n", BYTE_TO_BINARY(bin[i]));
         }
     }
+#endif
 
     /* write */
-    if ((fd = fopen("comp.bin","wb+")) == NULL) {
+    if ((fd = fopen(compressed_filename, "wb+")) == NULL) {
         fprintf(stderr, "fopen returned %s\n", strerror(errno));
         exit(0);
     }
@@ -482,14 +514,14 @@ int compress(char * input_filename)
 int main(int argc, char *argv[])
 {
     /* read from stdin if there's no file provided */
-    if (argc != 3) {
-        fprintf(stderr, "Usage : ./huffman input_filename output_filename\n");
+    if (argc != 4) {
+        fprintf(stderr, "Usage : ./huffman input_filename compressed_filename output_filename\n");
         exit(0);
     }
-    else if (argc == 3)
+    else if (argc == 4)
 	{
-        compress(argv[1]);
-		decompress(argv[2]);
+        compress(argv[1], argv[2]);
+		decompress(argv[3], argv[2]);
 	}
 
     return 0;

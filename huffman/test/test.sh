@@ -6,11 +6,9 @@ compute () {
     DECOMPRESS=$3
     echo "Source : $INPUT"
     SIZE_SRC=$(stat --printf="%s" $INPUT)
-    echo "Compress : ../bin/lzw -c $INPUT > $COMPRESS"
-    ../bin/lzw -c $INPUT > $COMPRESS
+    echo "Compress and decompress : ../bin/huffman $INPUT $COMPRESS $DECOMPRESS"
+    ../bin/huffman $INPUT $COMPRESS $DECOMPRESS
     set +x
-    echo "Decompress : ../bin/lzw -d $COMPRESS > $DECOMPRESS"
-    ../bin/lzw -d $COMPRESS > $DECOMPRESS 
 
     SIZE_CMP=$(stat --printf="%s" $COMPRESS)
     TAUX_CMP=$(bc -l <<< "scale=2; 1-$SIZE_CMP/$SIZE_SRC")
@@ -23,13 +21,6 @@ compute () {
     echo "Compression ratio : $TAUX_CMP"
     printf "\n"
 }
-
-printf "\n============================\n"
-printf "Input redirection : echo toto | ../bin/lzw -c | ../bin/lzw -d\n"
-echo toto | ../bin/lzw -c | ../bin/lzw -d
-
-printf "\nPress enter ..."
-read 
 
 INPUT=../../test-input/input.txt
 COMPRESS=output/compress.txt
@@ -71,7 +62,7 @@ compute $INPUT $COMPRESS $DECOMPRESS
 printf "\nPress enter ..."
 read 
 
-INPUT=../bin/lzw
+INPUT=../bin/huffman
 COMPRESS=output/compress.exe
 DECOMPRESS=output/decompress.exe
 compute $INPUT $COMPRESS $DECOMPRESS
