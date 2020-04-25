@@ -27,7 +27,8 @@ diff input decompress
 
 ## Tests
 
-TODO
+Automated `test.sh` script is in the `test` folder.
+
 
 ## Improvements
 
