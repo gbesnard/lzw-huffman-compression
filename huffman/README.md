@@ -35,5 +35,4 @@ Automated `test.sh` script is in the `test` folder.
 - Large file : malloc by chunk ? (ugly big malloc for now).
 - Iterative tree search ? Will introduce other malloc pb.
 - Write huffman tree into the compressed file, so that it can be read by a second independant execution.
-- Use same API as lzw software, and test on the same test files.
 - Try to compress lzw output dictionary with a huffman second pass.
