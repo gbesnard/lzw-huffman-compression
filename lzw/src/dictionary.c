@@ -75,12 +75,16 @@ void dico_add_seq(seq s)
 {
     if (dico_get_seq(s) == -1) { /* add the sequence if it doesn't exist yet */
         // TODO : REINIT dico 
-        if (dico.index == DICO_SIZE - 1) { fprintf(stderr, "dico.index = %"PRIu32" TODO : handle dico reinit\n", dico.index); exit(0); }
+        if (dico.index == DICO_SIZE - 1) { 
+			fprintf(stderr, "dico.index = %"PRIu32" TODO : handle dico reinit\n", dico.index); 
+			exit(0); 
+		}
 
         dico.index++;
         *(dico.array[dico.index]) = s;
 #ifdef DEBUG
-        printf("\nADDED : prefix = %i, value %i(%c), index %"PRIu32"\n", dico_get_seq(*(s.prefix)), s.curr, s.curr, dico.index);
+        printf("\nADDED : prefix = %i, value %i(%c), index %"PRIu32"\n", 
+				dico_get_seq(*(s.prefix)), s.curr, s.curr, dico.index);
 #endif
         if (dico.index == DICO_SIZE - 1) {
             free_dico();

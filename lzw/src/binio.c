@@ -43,7 +43,10 @@ uint32_t read_input(FILE *file)
 	uint32_t temp = 0;
 	for (int i = 0; i < dico.nbit; i++){	
 		if (io.posi == 0){
-			if (fread(&(io.buffer), 1 , 1, file) != 1) { fprintf(stderr, "fread size error in read input"); exit(0); }
+			if (fread(&(io.buffer), 1 , 1, file) != 1) { 
+				fprintf(stderr, "fread size error in read input"); 
+				exit(0); 
+			}
 			io.posi = 8;
 		}
 		

@@ -19,13 +19,17 @@ void compress(FILE *file)
         scanf_ret = fscanf(file, "%c", &a);
 
         /* concat w.a */
-        if ((i_w_found = dico_get_seq(w)) == -1) { fprintf(stderr, "Error, w not found in dico\n"); exit(0); }
+        if ((i_w_found = dico_get_seq(w)) == -1) { 
+			fprintf(stderr, "Error, w not found in dico\n"); 
+			exit(0); 
+		}
         wa.prefix = (dico.array[i_w_found]);
         wa.curr = a;
 
         if ((i_wa_found = dico_get_seq(wa)) != -1) { /* search for a longer substring */
 #ifdef DEBUG
-            fprintf(stderr, "\nFOUND : prefix = %i, value %i(%c), index %"PRIu32"\n", dico_get_seq(*(wa.prefix)), a, a, i_wa_found);
+            fprintf(stderr, "\nFOUND : prefix = %i, value %i(%c), index %"PRIu32"\n", 
+					dico_get_seq(*(wa.prefix)), a, a, i_wa_found);
 #endif
             /* w <- w.a */
             w = *(dico.array[i_wa_found]); 
@@ -33,7 +37,8 @@ void compress(FILE *file)
         }
         else { /* longer substring */
 #ifdef DEBUG
-            fprintf(stderr, "\nNOT FOUND : prefix = %i, value %i(%c), send %i \n", dico_get_seq(*(wa.prefix)), a, a, dico_get_seq(w));
+            fprintf(stderr, "\nNOT FOUND : prefix = %i, value %i(%c), send %i \n", 
+					dico_get_seq(*(wa.prefix)), a, a, dico_get_seq(w));
 #endif
 
             write_output(stdout, i_w_found); 
